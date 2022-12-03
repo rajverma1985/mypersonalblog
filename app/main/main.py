@@ -1,5 +1,8 @@
 from flask import render_template
+import requests
 from app.run import app
+
+blog_posts = requests.get("https://api.npoint.io/26e3f14416accc8b8c9b")
 
 
 @app.route('/')

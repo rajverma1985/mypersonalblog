@@ -23,3 +23,8 @@ def sample_post():
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
+
+
+@app.route('/form-entry', methods=['POST'])
+def get_data():
+    return "Successfully sent your message"

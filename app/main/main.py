@@ -1,12 +1,12 @@
-from flask import render_template
+from flask import render_template, request, jsonify
 import requests
 from app.run import app
 
-blog_posts = requests.get("https://api.npoint.io/26e3f14416accc8b8c9b")
+blog_posts = requests.get("https://api.npoint.io/26e3f14416accc8b8c9b").json()
 
 
 @app.route('/')
-def index():
+def get_posts_all():
     return render_template('index.html')
 
 
@@ -15,16 +15,18 @@ def about():
     return render_template('about.html')
 
 
-@app.route('/sample_post')
-def sample_post():
-    return render_template('post.html')
+@app.route('/show_post/<int:id>')
+def show_post(index):
+    requested_post = None
+    for blog in blog_posts:
+        if blog["id"] == index:
+            requested_post = blog
+    return render_template("post.html", post=requested_post)
 
 
-@app.route('/contact')
+@app.route('/contact', methods=['GET', 'POST'])
 def contact():
-    return render_template('contact.html')
-
-
-@app.route('/form-entry', methods=['POST'])
-def get_data():
-    return "Successfully sent your message"
+    if request.method == "POST":
+        data = request.data
+        return render_template('contact.html', msg_sent=True)
+    return render_template('contact.html', msg_sent=False)

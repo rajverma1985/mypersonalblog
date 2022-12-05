@@ -7,8 +7,8 @@
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-md-10 col-lg-8 col-xl-7">
                         <div class="site-heading">
-                            <h1>Clean Blog</h1>
-                            <span class="subheading">A Blog Theme by Start Bootstrap</span>
+                            <h1>Raj's Blog</h1>
+                            <span class="subheading">A Blog Theme by Start Raj</span>
                         </div>
                     </div>
                 </div>
@@ -21,14 +21,14 @@
                     <!-- Post preview-->
                     {% for blog in posts %}
                     <div class="post-preview">
-                        <a href=#>
+                        <a href="{{ url_for('show_post', index=blog.id) }}">
                             <h2 class="post-title">{{blog.title}}</h2>
                             <h3 class="post-subtitle">{{blog.subtitle}}</h3>
                         </a>
                         <p class="post-meta">
                             Posted by
-                            <a href="#!">Start Bootstrap</a>
-                            on September 24, 2022
+                            <a href="#!">{{blog.author}}</a>
+                            {{blog.date}}
                         </p>
                     </div>
                     {% endfor %}

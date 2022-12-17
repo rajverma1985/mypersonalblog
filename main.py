@@ -6,7 +6,6 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired, URL
 from flask_ckeditor import CKEditor, CKEditorField
 
-
 ## Delete this code:
 # import requests
 # posts = requests.get("https://api.npoint.io/43644ec4f0013682fc0d").json()
@@ -20,6 +19,7 @@ Bootstrap(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
 
 ##CONFIGURE TABLE
 class BlogPost(db.Model):
@@ -64,6 +64,7 @@ def about():
 @app.route("/contact")
 def contact():
     return render_template("contact.html")
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)

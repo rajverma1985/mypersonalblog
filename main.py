@@ -1,3 +1,6 @@
+import datetime
+
+import requests
 from flask import Flask, render_template, redirect, url_for
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
@@ -6,16 +9,12 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired, URL
 from flask_ckeditor import CKEditor, CKEditorField
 
-## Delete this code:
-# import requests
-# posts = requests.get("https://api.npoint.io/43644ec4f0013682fc0d").json()
-
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = '9BYkEfBA6O6donzWlSihBXox7C0sKR6c'
 ckeditor = CKEditor(app)
 Bootstrap(app)
 
-##CONNECT TO DB
+# CONNECT TO DB
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -44,7 +43,21 @@ class CreatePostForm(FlaskForm):
 
 @app.route('/')
 def get_all_posts():
-    return render_template("index.html", all_posts=posts)
+    blog_posts = BlogPost.query.all()
+    return render_template("index.html", all_posts=blog_posts)
+
+
+@app.route('/new-post', methods=['GET', 'POST'])
+def new_post():
+    blog_form = CreatePostForm()
+    today = datetime.datetime.today().date()
+    if blog_form.validate_on_submit():
+        add_post = BlogPost(title=blog_form.title.data, date=today, subtitle=blog_form.subtitle.data, body=blog_form.body.data,
+                            author=blog_form.author.data, img_url=blog_form.img_url.data)
+        db.session.add(add_post)
+        db.session.commit()
+        return redirect(url_for('new_post'))
+    return render_template('make-post.html', form=blog_form)
 
 
 @app.route("/post/<int:index>")
@@ -67,4 +80,4 @@ def contact():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)

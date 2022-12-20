@@ -1,7 +1,6 @@
 from datetime import date
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, Blueprint
 from app.api.forms import CreatePostForm
-from app.auth.forms import RegisterForm
 from app.models import BlogPost
 from app import db
 from app.api import api
@@ -11,22 +10,6 @@ from app.api import api
 def get_all_posts():
     blog_posts = BlogPost.query.all()
     return render_template("index.html", all_posts=blog_posts)
-
-
-@api.route('/register')
-def register():
-    registration = RegisterForm()
-    return render_template("register.html", form=registration)
-
-
-@api.route('/login')
-def login():
-    return render_template("login.html")
-
-
-@api.route('/logout')
-def logout():
-    return redirect(url_for('get_all_posts'))
 
 
 @api.route('/new-post', methods=['GET', 'POST'])

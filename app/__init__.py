@@ -1,4 +1,4 @@
-from flask import Flask, render_template, json
+from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_ckeditor import CKEditor
@@ -28,4 +28,6 @@ def create_app():
 # register blueprints
 def register_bp(app):
     from app.api.views import api
+    from app.auth.views import auth
     app.register_blueprint(api)
+    app.register_blueprint(auth)

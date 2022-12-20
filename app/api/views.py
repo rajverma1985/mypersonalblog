@@ -1,51 +1,35 @@
 from datetime import date
-from flask import Flask, render_template, redirect, url_for
-from flask_bootstrap import Bootstrap
-from flask_sqlalchemy import SQLAlchemy
-from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired, URL
-from flask_ckeditor import CKEditor, CKEditorField
-
-app = Flask(__name__)
-app.config['SECRET_KEY'] = '9BYkEfBA6O6donzWlSihBXox7C0sKR6c'
-ckeditor = CKEditor(app)
-Bootstrap(app)
-
-# CONNECT TO DB
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+from flask import render_template, redirect, url_for
+from app.api.forms import CreatePostForm
+from app.auth.forms import RegisterForm
+from app.models import BlogPost
+from app import db
+from app.api import api
 
 
-##CONFIGURE TABLE
-class BlogPost(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(250), unique=True, nullable=False)
-    subtitle = db.Column(db.String(250), nullable=False)
-    date = db.Column(db.String(250), nullable=False)
-    body = db.Column(db.Text, nullable=False)
-    author = db.Column(db.String(250), nullable=False)
-    img_url = db.Column(db.String(250), nullable=False)
-
-
-##WTForm
-class CreatePostForm(FlaskForm):
-    title = StringField("Blog Post Title", validators=[DataRequired()])
-    subtitle = StringField("Subtitle", validators=[DataRequired()])
-    author = StringField("Your Name", validators=[DataRequired()])
-    img_url = StringField("Blog Image URL", validators=[DataRequired(), URL()])
-    body = CKEditorField("Blog Content", validators=[DataRequired()])
-    submit = SubmitField("Submit Post")
-
-
-@app.route('/')
+@api.route('/')
 def get_all_posts():
     blog_posts = BlogPost.query.all()
     return render_template("index.html", all_posts=blog_posts)
 
 
-@app.route('/new-post', methods=['GET', 'POST'])
+@api.route('/register')
+def register():
+    registration = RegisterForm()
+    return render_template("register.html", form=registration)
+
+
+@api.route('/login')
+def login():
+    return render_template("login.html")
+
+
+@api.route('/logout')
+def logout():
+    return redirect(url_for('get_all_posts'))
+
+
+@api.route('/new-post', methods=['GET', 'POST'])
 def new_post():
     blog_form = CreatePostForm()
     today = date.today().strftime("%d %B %Y")
@@ -59,13 +43,13 @@ def new_post():
     return render_template('make-post.html', form=blog_form)
 
 
-@app.route("/post/<int:post_id>")
+@api.route("/post/<int:post_id>")
 def show_post(post_id):
     requested_post = BlogPost.query.get(post_id)
     return render_template("post.html", post=requested_post)
 
 
-@app.route("/edit_post/<int:post_id>", methods=["GET", "POST"])
+@api.route("/edit_post/<int:post_id>", methods=["GET", "POST"])
 def edit_post(post_id):
     post = BlogPost.query.get(post_id)
     edit_form = CreatePostForm(title=post.title,
@@ -84,7 +68,7 @@ def edit_post(post_id):
     return render_template("make-post.html", form=edit_form, is_edit=True)
 
 
-@app.route('/delete_post/<int:post_id>')
+@api.route('/delete_post/<int:post_id>')
 def delete_post(post_id):
     post = BlogPost.query.get(post_id)
     db.session.delete(post)
@@ -92,15 +76,11 @@ def delete_post(post_id):
     return redirect(url_for('get_all_posts'))
 
 
-@app.route("/about")
+@api.route("/about")
 def about():
     return render_template("about.html")
 
 
-@app.route("/contact")
+@api.route("/contact")
 def contact():
     return render_template("contact.html")
-
-
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)

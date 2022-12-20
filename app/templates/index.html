@@ -22,7 +22,7 @@
         {% for post in all_posts %}
         <div class="post-preview">
 <!-- the show post needs a post_id to show a post hence get that from the post object of class all_posts-->
-          <a href="{{ url_for('show_post', post_id=post.id) }}">
+          <a href="{{ url_for('api.show_post', post_id=post.id) }}">
             <h2 class="post-title">
               {{post.title}}
             </h2>
@@ -33,14 +33,14 @@
           <p class="post-meta">Posted by
             <a href="#">{{post.author}}</a>
             on {{post.date}}
-          <a href="{{url_for('delete_post', post_id=post.id)}}"><em>Delete this post</em> ✘</a>
+          <a href="{{url_for('api.delete_post', post_id=post.id)}}"><em>Delete this post</em> ✘</a>
           </p>
         </div>
         <hr>
         {% endfor %}
         <!-- New Post -->
         <div class="clearfix">
-          <a class="btn btn-primary float-right" href="{{url_for('new_post')}}">Create New Post</a>
+          <a class="btn btn-primary float-right" href="{{url_for('api.new_post')}}">Create New Post</a>
         </div>
       </div>
     </div>

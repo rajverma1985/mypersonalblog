@@ -4,6 +4,7 @@ from app.api.forms import CreatePostForm
 from app.models import BlogPost
 from app import db
 from app.api import api
+from flask_ckeditor import CKEditor
 
 
 @api.route('/')
@@ -47,7 +48,7 @@ def edit_post(post_id):
         post.author = edit_form.author.data
         post.body = edit_form.body.data
         db.session.commit()
-        return redirect(url_for("show_post", post_id=post.id))
+        return redirect(url_for("api.show_post", post_id=post.id))
     return render_template("make-post.html", form=edit_form, is_edit=True)
 
 

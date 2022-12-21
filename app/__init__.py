@@ -1,14 +1,16 @@
 from flask import Flask
 from flask_bootstrap import Bootstrap
+from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_ckeditor import CKEditor
 from flask_migrate import Migrate
-import os
 
 db = SQLAlchemy()
 migrate = Migrate()
 ckeditor = CKEditor()
-# basedir = os.path.abspath(os.path.dirname(__file__))
+login_manager = LoginManager()
+login_manager.login_view = 'auth.login'
+login_manager.login_message = 'Please log in to access this page.'
 
 
 def create_app():
@@ -21,6 +23,7 @@ def create_app():
     # Initialize DB
     db.init_app(app)
     migrate.init_app(app, db)
+    login_manager.init_app(app)
 
     ckeditor.init_app(app)
     register_bp(app)

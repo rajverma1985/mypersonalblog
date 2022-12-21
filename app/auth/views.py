@@ -10,8 +10,8 @@ from app import login_manager
 
 
 @login_manager.user_loader
-def load_user(id):
-    return Users.query.get(int(id))
+def load_user(user_id):
+    return Users.query.get(int(user_id))
 
 
 @auth.route('/register', methods=['GET', 'POST'])
@@ -19,7 +19,7 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         if Users.query.filter_by(email=form.email.data).first():
-            # flash messsage
+            # flash message
             flash("You've already signed up with that email, Please log in instead!")
             # Redirect to /login route.
             return redirect(url_for('auth.login'))
@@ -53,4 +53,5 @@ def login():
 
 @auth.route('/logout')
 def logout():
-    return redirect(url_for('get_all_posts'))
+    logout_user()
+    return redirect(url_for('api.get_all_posts'))

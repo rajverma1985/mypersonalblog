@@ -1,10 +1,22 @@
 from datetime import date
-from flask import render_template, redirect, url_for, Blueprint
+from functools import wraps
+from flask import render_template, redirect, url_for, abort
+from flask_login import current_user
 from app.api.forms import CreatePostForm
 from app.models import BlogPost
 from app import db
 from app.api import api
 from flask_ckeditor import CKEditor
+
+
+def admin_only(func):
+    @wraps(func)
+    def wrapper_func(*args, **kwargs):
+        """checking for anonymous user and admin user here"""
+        if current_user.get_id() == 1:
+            return func(*args, **kwargs)
+        return abort(403)
+    return wrapper_func
 
 
 @api.route('/')
@@ -14,6 +26,7 @@ def get_all_posts():
 
 
 @api.route('/new-post', methods=['GET', 'POST'])
+@admin_only
 def new_post():
     blog_form = CreatePostForm()
     today = date.today().strftime("%d %B %Y")
@@ -34,6 +47,7 @@ def show_post(post_id):
 
 
 @api.route("/edit_post/<int:post_id>", methods=["GET", "POST"])
+@admin_only
 def edit_post(post_id):
     post = BlogPost.query.get(post_id)
     edit_form = CreatePostForm(title=post.title,
@@ -53,6 +67,7 @@ def edit_post(post_id):
 
 
 @api.route('/delete_post/<int:post_id>')
+@admin_only
 def delete_post(post_id):
     post = BlogPost.query.get(post_id)
     db.session.delete(post)

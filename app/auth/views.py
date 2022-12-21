@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, abort
 from app.auth import auth
 from app.auth.forms import RegisterForm, LoginForm
 from app.models import Users
@@ -7,10 +7,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, current_user, logout_user
 from flask_gravatar import Gravatar
 from app import login_manager
+from functools import wraps
 
 
 @login_manager.user_loader
 def load_user(user_id):
+    """required by login manager to manage login and logout functionality"""
     return Users.query.get(int(user_id))
 
 

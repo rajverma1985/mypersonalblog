@@ -13,7 +13,7 @@ def admin_only(func):
     @wraps(func)
     def wrapper_func(*args, **kwargs):
         """checking for anonymous user and admin user here"""
-        if current_user.get_id() == 1:
+        if current_user.get_id() != 1:
             return func(*args, **kwargs)
         return abort(403)
     return wrapper_func

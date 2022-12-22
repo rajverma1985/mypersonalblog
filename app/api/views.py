@@ -6,16 +6,16 @@ from app.api.forms import CreatePostForm
 from app.models import BlogPost
 from app import db
 from app.api import api
-from flask_ckeditor import CKEditor
 
 
 def admin_only(func):
     @wraps(func)
     def wrapper_func(*args, **kwargs):
         """checking for anonymous user and admin user here"""
-        if current_user.get_id() != 1:
-            return func(*args, **kwargs)
-        return abort(403)
+        if not current_user.is_authenticated or (current_user.is_authenticated and current_user.id != 1):
+            return abort(403)
+        return func(*args, **kwargs)
+
     return wrapper_func
 
 
@@ -28,16 +28,20 @@ def get_all_posts():
 @api.route('/new-post', methods=['GET', 'POST'])
 @admin_only
 def new_post():
-    blog_form = CreatePostForm()
-    today = date.today().strftime("%d %B %Y")
-    if blog_form.validate_on_submit():
-        add_post = BlogPost(title=blog_form.title.data, date=today, subtitle=blog_form.subtitle.data,
-                            body=blog_form.body.data,
-                            author=blog_form.author.data, img_url=blog_form.img_url.data)
+    form = CreatePostForm()
+    if form.validate_on_submit():
+        add_post = BlogPost(
+            title=form.title.data,
+            subtitle=form.subtitle.data,
+            body=form.body.data,
+            author=current_user,
+            img_url=form.img_url.data,
+            date=date.today().strftime("%B %d, %Y")
+          )
         db.session.add(add_post)
         db.session.commit()
-        return redirect(url_for('new_post'))
-    return render_template('make-post.html', form=blog_form)
+        return redirect(url_for('api.get_all_posts'))
+    return render_template('make-post.html', form=form, current_user=current_user)
 
 
 @api.route("/post/<int:post_id>")

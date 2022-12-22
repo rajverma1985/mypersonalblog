@@ -27,7 +27,8 @@ def create_app():
 
     ckeditor.init_app(app)
     register_bp(app)
-    # db.create_all()
+    with app.app_context():
+        db.create_all()
     return app
 
 

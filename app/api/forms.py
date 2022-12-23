@@ -12,3 +12,9 @@ class CreatePostForm(FlaskForm):
     img_url = StringField("Blog Image URL", validators=[DataRequired(), URL()])
     body = CKEditorField("Blog Content", validators=[DataRequired()])
     submit = SubmitField("Submit Post")
+
+
+# comments form
+class CommentForm(FlaskForm):
+    comments = CKEditorField("Comment", validators=[DataRequired()])
+    submit = SubmitField("Submit Comment")

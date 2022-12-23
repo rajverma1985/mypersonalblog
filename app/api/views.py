@@ -2,7 +2,7 @@ from datetime import date
 from functools import wraps
 from flask import render_template, redirect, url_for, abort
 from flask_login import current_user
-from app.api.forms import CreatePostForm
+from app.api.forms import CreatePostForm, CommentForm
 from app.models import BlogPost
 from app import db
 from app.api import api
@@ -44,10 +44,14 @@ def new_post():
     return render_template('make-post.html', form=form, current_user=current_user)
 
 
-@api.route("/post/<int:post_id>")
+@api.route("/post/<int:post_id>", methods=['GET', 'POST'])
 def show_post(post_id):
+    comment_form = CommentForm()
     requested_post = BlogPost.query.get(post_id)
-    return render_template("post.html", post=requested_post)
+    if comment_form.validate_on_submit():
+        comment = comment_form.data
+        return redirect(url_for('api.show_post'), comment = comment)
+    return render_template("post.html", post=requested_post, form=comment_form)
 
 
 @api.route("/edit_post/<int:post_id>", methods=["GET", "POST"])

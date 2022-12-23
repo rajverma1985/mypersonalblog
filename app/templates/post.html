@@ -1,5 +1,5 @@
 {% include "header.html" %}
-
+{% import "bootstrap/wtf.html" as wtf %}
 <!-- Page Header -->
 <header class="masthead" style="background-image: url('{{post.img_url}}')">
 	<div class="overlay"></div>
@@ -27,6 +27,11 @@
             {{ post.body|safe }}
           </p>
            <hr>
+            <div class="clearfix">
+                {{ ckeditor.load() }}
+                {{ ckeditor.config(name='comments') }}
+                {{ wtf.quick_form(form, novalidate=True, button_map={'submit': 'primary'}) }}
+            </div>
            <div class="clearfix">
                {% if current_user.id == 1 %}
                     <a class="btn btn-primary float-right" href="{{url_for('api.edit_post', post_id=post.id)}}">Edit Post</a>

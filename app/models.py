@@ -14,7 +14,7 @@ class Users(UserMixin, db.Model):
 
 
 class BlogPost(db.Model):
-    __tablename__="blog_posts"
+    __tablename__ = "blog_posts"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(250), unique=True, nullable=False)
     subtitle = db.Column(db.String(250), nullable=False)
@@ -23,3 +23,9 @@ class BlogPost(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey("registered_users.id"))
     author = relationship("Users", back_populates="posts")
     img_url = db.Column(db.String(250), nullable=False)
+
+
+class Comment(db.Model):
+    __tablename__ = "comments"
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.Text, nullable=False)

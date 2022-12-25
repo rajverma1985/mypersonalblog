@@ -28,8 +28,9 @@
           </p>
            <hr>
             <div class="clearfix">
-                {{ ckeditor.load() }}
                 {{ ckeditor.config(name='comments') }}
+                {{ ckeditor.load() }}
+                {{ ckeditor.load_code_theme() }}
                 {{ wtf.quick_form(form, novalidate=True, button_map={'submit': 'primary'}) }}
             </div>
            <div class="clearfix">

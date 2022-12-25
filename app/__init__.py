@@ -18,6 +18,7 @@ def create_app():
     app.config['SECRET_KEY'] = '9BYkEfBA6O6donzWlSihBXox7C0sKR6c'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['CKEDITOR_ENABLE_CODESNIPPET'] = True
 
     Bootstrap(app)
     # Initialize DB

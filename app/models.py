@@ -30,8 +30,9 @@ class BlogPost(db.Model):
 class Comment(db.Model):
     __tablename__ = "comments"
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.Text, nullable=False)
     auth_id = db.Column(db.Integer, db.ForeignKey("registered_users.id"))
     comment_author = db.relationship("Users", back_populates="comments")
-    parent_post = relationship("BlogPost", back_populates="comments")
     post_id = db.Column(db.Integer, db.ForeignKey("blog_posts.id"))
+    parent_post = relationship("BlogPost", back_populates="comments")
+    text = db.Column(db.Text, nullable=False)
+

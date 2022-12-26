@@ -48,13 +48,13 @@ def new_post():
 
 @api.route("/post/<int:post_id>", methods=['GET', 'POST'])
 def show_post(post_id):
-    comment_form = CommentForm()
+    form = CommentForm()
     requested_post = BlogPost.query.get(post_id)
-    if comment_form.validate_on_submit():
-        new_comment = Comment(text=comment_form.comments.data)
+    if form.validate_on_submit():
+        new_comment = Comment(text=form.comments.data, comment_author=current_user, parent_post=requested_post)
         db.session.add(new_comment)
-        return redirect(url_for('api.show_post', index=post_id))
-    return render_template("post.html", post=requested_post, form=comment_form)
+        db.session.commit()
+    return render_template("post.html", post=requested_post, form=form)
 
 
 @api.route("/edit_post/<int:post_id>", methods=["GET", "POST"])

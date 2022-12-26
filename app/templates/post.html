@@ -27,12 +27,24 @@
             {{ post.body|safe }}
           </p>
            <hr>
-            <div class="clearfix">
-                {{ ckeditor.config(name='comments') }}
                 {{ ckeditor.load() }}
-                {{ ckeditor.load_code_theme() }}
+                {{ ckeditor.config(name='comment_text')}}
                 {{ wtf.quick_form(form, novalidate=True, button_map={'submit': 'primary'}) }}
-            </div>
+                <div class="col-lg-8 col-md-10 mx-auto comment">
+                        {% for comment in post.comments: %}
+                        <ul class="commentList">
+                            <li>
+                                <div class="commenterImage">
+                                    <img src="https://pbs.twimg.com/profile_images/744849215675838464/IH0FNIXk.jpg"/>
+                                </div>
+                                <div class="commentText">
+                                    {{comment.text|safe}}
+                                    <span class="date sub-text">{{comment.comment_author.name}}</span>
+                                </div>
+                            </li>
+                        </ul>
+                        {% endfor %}
+                    </div>
            <div class="clearfix">
                {% if current_user.id == 1 %}
                     <a class="btn btn-primary float-right" href="{{url_for('api.edit_post', post_id=post.id)}}">Edit Post</a>

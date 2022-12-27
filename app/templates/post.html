@@ -30,12 +30,13 @@
                 {{ ckeditor.load() }}
                 {{ ckeditor.config(name='comment_text')}}
                 {{ wtf.quick_form(form, novalidate=True, button_map={'submit': 'primary'}) }}
+            <hr>
                 <div class="col-lg-8 col-md-10 mx-auto comment">
                         {% for comment in post.comments: %}
                         <ul class="commentList">
                             <li>
                                 <div class="commenterImage">
-                                    <img src="https://pbs.twimg.com/profile_images/744849215675838464/IH0FNIXk.jpg"/>
+                                    <img src="{{ comment.comment_author.email | gravatar }}"/>
                                 </div>
                                 <div class="commentText">
                                     {{comment.text|safe}}

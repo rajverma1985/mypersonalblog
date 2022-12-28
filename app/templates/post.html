@@ -1,36 +1,43 @@
 {% include "header.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
+
+
+{% block content %}
 <!-- Page Header -->
 <header class="masthead" style="background-image: url('{{post.img_url}}')">
 	<div class="overlay"></div>
-	<div class="container">
-		<div class="row">
-			<div class="col-lg-8 col-md-10 mx-auto">
-				<div class="post-heading">
-					<h1>{{post.title}}</h1>
-					<h2 class="subheading">{{post.subtitle}}</h2>
-					<span class="meta">Posted by
-              <a href="#">{{post.author.name}}</a>
-              on {{post.date}}</span>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                    <div class="post-heading">
+                        <h1>{{post.title}}</h1>
+                        <h2 class="subheading">{{post.subtitle}}</h2>
+                        <span class="meta">Posted by
+                        <a href="#">{{post.author.name}}</a>
+                        on {{post.date}}</span>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
     </div>
-  </header>
+</header>
 
   <!-- Post Content -->
   <article>
     <div class="container">
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
-          <p>
             {{ post.body|safe }}
-          </p>
            <hr>
-                {{ ckeditor.load() }}
-                {{ ckeditor.config(name='comment_text')}}
-                {{ wtf.quick_form(form, novalidate=True, button_map={'submit': 'primary'}) }}
-            <hr>
+            {% if current_user.id == 1 %}
+            <div class="clearfix">
+                    <a class="btn btn-primary float-right" href="{{url_for('api.edit_post', post_id=post.id)}}">Edit Post</a>
+            </div>
+            {% endif %}
+
+            {{ ckeditor.load() }}
+            {{ ckeditor.config(name='comment_text')}}
+            {{ wtf.quick_form(form, novalidate=True, button_map={'submit': 'primary'}) }}
+
                 <div class="col-lg-8 col-md-10 mx-auto comment">
                         {% for comment in post.comments: %}
                         <ul class="commentList">
@@ -46,11 +53,6 @@
                         </ul>
                         {% endfor %}
                     </div>
-           <div class="clearfix">
-               {% if current_user.id == 1 %}
-                    <a class="btn btn-primary float-right" href="{{url_for('api.edit_post', post_id=post.id)}}">Edit Post</a>
-               {% endif %}
-        </div>
           </div>
       </div>
     </div>
@@ -58,3 +60,4 @@
 
   <hr>
 {% include "footer.html" %}
+{% endblock %}

@@ -22,8 +22,6 @@ def admin_only(func):
 @api.route('/')
 def get_all_posts():
     blog_posts = BlogPost.query.all()
-    for post in blog_posts:
-        print(post.author.name)
     return render_template("index.html", all_posts=blog_posts)
 
 
